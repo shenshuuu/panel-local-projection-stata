@@ -50,7 +50,7 @@ The command requires exactly one dependent variable and at least one independent
 {cmd:xtlp} estimates dynamic impulse response functions (IRFs) for panel data 
 using Local Projection (LP) method. It offers two estimators via {opt method()}:
 the standard fixed-effect estimator ({cmd:m(fe)}) and the split-panel 
-jackknife estimator ({cmd:m(spj)}). The SPJ estimator addresses intrinsic Nickell bias in dynamic settings ({help xtlp##MSS2025:Mei, Sheng, and Shi, 2025}).
+jackknife estimator ({cmd:m(spj)}). The SPJ estimator addresses the intrinsic Nickell bias in dynamic settings ({help xtlp##MSS2025:Mei, Sheng, and Shi, 2025}).
 {p_end}
 
 {pstd}
