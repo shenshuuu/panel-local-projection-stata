@@ -27,6 +27,10 @@ For multiple horizons, `xtlp` automates IRF construction over the range specifie
 Use the Stata command below to install the most recent published version of **xtlp**. 
 
 ```
+    net install xtlp, from("https://raw.githubusercontent.com/shenshuuu/panel-local-projection-stata/main/") replace
+```
+or
+```
     github install shenshuuu/panel-local-projection-stata, replace
 ```
 
