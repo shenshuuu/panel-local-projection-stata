@@ -47,34 +47,31 @@ The command requires exactly one dependent variable and at least one independent
 {title:Description}
 
 {pstd}
-{cmd:xtlp} estimates dynamic impulse response functions (IRFs) for panel data 
-using Local Projection (LP) method. It offers two estimators via {opt method()}:
+{cmd:xtlp} estimates the dynamic impulse response functions (IRFs) in panel data 
+using the Local Projection (LP) method. It offers two estimators via {opt method()}:
 the standard fixed-effect estimator ({cmd:m(fe)}) and the split-panel 
 jackknife estimator ({cmd:m(spj)}). The SPJ estimator addresses the intrinsic Nickell bias in dynamic settings ({help xtlp##MSS2025:Mei, Sheng, and Shi, 2025}).
 {p_end}
 
 {pstd}
 When LPs are estimated with fixed effects in short panels, the dynamic structure
-of the predictive equation typically induces Nickell bias in the FE estimator,
-even when no lagged dependent variable appears explicitly among {it:indepvars}.
-This bias invalidates standard inference based on FE t-statistics. The SPJ
-estimator implemented here provides a simple and effective bias-correction
-that restores valid statistical inference in panel LPs, following
+of the predictive equation induces the Nickell bias in the FE estimator, even if no lagged dependent variable appears explicitly in {it:indepvars}.
+This bias invalidates standard inference based on the FE t-statistics. The SPJ estimator implemented here in this command provides a simple and effective bias-correction. It restores valid statistical inference in panel LPs, following
 {help xtlp##MSS2025:Mei, Sheng, and Shi (2025)}.{p_end}
 
 {pstd}
-The command performs single-equation estimation under the specified fixed-effect 
+The command performs a single-equation estimation under the specified fixed-effect 
 structure ({opt fe} or {opt tfe}). Given {it:depvar} and {it:indepvars},
 {cmd:xtlp} applies the chosen estimator ({cmd:m(fe)} or {cmd:m(spj)}) to produce coefficient 
 estimates.
 {p_end}
 
 {pstd}
-For multiple horizons, {cmd:xtlp} automates IRF construction over the range
+For multiple horizons, {cmd:xtlp} automates the IRF construction over the range
 specified in {opt hor()}. It generates horizon-specific transformed dependent
-variables via {opt ytransf()}, runs sequential regressions for each
+variables via {opt ytransf()}, runs a regression for each
 horizon, and compiles the results. The option {opt shock()} allows users to
-treat several leading regressors as shocks; {cmd:xtlp} then reports dynamic IRFs
+treat several leading regressors as shocks; {cmd:xtlp} then reports the IRFs
 and, if requested, produces IRF plots via {opt graph}.{p_end}
 
 

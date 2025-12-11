@@ -1,9 +1,9 @@
-# `xtlp` : Panel local projections with fixed-effect (FE) estimator and split-panel jackknife (SPJ) estimator
+# `xtlp` : Panel local projections
 
-This repository hosts the **Stata command** `xtlp` for panel local projections with split-panel jackknife (SPJ) estimator suggested by 
+This repository hosts the **Stata command** `xtlp` for panel local projections with split-panel jackknife (SPJ) estimator proposed by 
 - Ziwei Mei, Liugang Sheng, Zhentao Shi, 2025, "[Nickell bias in panel local projection: Financial crises are worse than you think,](https://arxiv.org/abs/2302.13455)" *Journal of International Economics*.
 
-Other repositories:
+External repositories:
 - [panel-lp-replication](https://github.com/metricshilab/panel-lp-replication) is the repository that offers replication code for simulations and empirical applications in the paper.
 
 - [panel-local-projection](https://github.com/zhentaoshi/panel-local-projection) is the repository that offers the package `pLP` in `R` to implement the panel local projection that includes FE and SPJ two methods.
@@ -14,15 +14,15 @@ Other repositories:
 xtlp depvar indepvars [if] [in], method(method_name) [fe tfe hor(numlist) ytransf(transf_name) shock(integer) graph]
 ```
 
-`xtlp` estimates dynamic impulse response functions (IRFs) for panel data using Local Projection (LP) method. It offers two estimators via `method()`: the standard fixed-effect estimator (`method(fe)`) and the split-panel jackknife estimator (`method(spj)`). The SPJ estimator addresses the intrinsic Nickell bias in dynamic settings.
+`xtlp` estimates the dynamic impulse response functions (IRFs) in panel data using the Local Projection (LP) method. It offers two estimators via `method()`: the standard fixed-effect estimator (`method(fe)`) and the split-panel jackknife estimator (`method(spj)`). The SPJ estimator addresses the intrinsic Nickell bias in dynamic settings.
 
-When LPs are estimated with fixed effects in short panels, the dynamic structure of the predictive equation typically induces Nickell bias in the FE estimator, even when no lagged dependent variable appears explicitly among *indepvars*. This bias invalidates standard inference based on FE t-statistics. The SPJ estimator implemented here provides a simple and effective bias-correction that restores valid statistical inference in panel LPs.
+When LPs are estimated with fixed effects in short panels, the dynamic structure of the predictive equation induces the Nickell bias in the FE estimator, even if no lagged dependent variable appears explicitly in *indepvars*. This bias invalidates standard inference based on the FE t-statistics. The SPJ estimator implemented here in this command provides a simple and effective bias-correction. It restores valid statistical inference in panel LPs.
 
-The command performs single-equation estimation under the specified fixed-effect structure (`fe` or `tfe`). Given *depvar* and *indepvars*, `xtlp` applies the chosen estimator (`method(fe)` or `method(spj)`) to produce coefficient estimates.
+The command performs a single-equation estimation under the specified fixed-effect structure (`fe` or `tfe`). Given *depvar* and *indepvars*, `xtlp` applies the chosen estimator (`method(fe)` or `method(spj)`) to produce coefficient estimates.
 
-For multiple horizons, `xtlp` automates IRF construction over the range specified in `hor()`. It generates horizon-specific transformed dependent variables via `ytransf()`, runs sequential regressions for each horizon, and compiles the results. The option `shock()` allows users to treat several leading regressors as shocks; `xtlp` then reports dynamic IRFs and, if requested, produces IRF plots via `graph`.
+For multiple horizons, `xtlp` automates the IRF construction over the range specified in `hor()`. It generates horizon-specific transformed dependent variables via `ytransf()`, runs a regression for each horizon, and compiles the results. The option `shock()` allows users to treat several leading regressors as shocks; `xtlp` then reports the IRFs and, if requested, produces IRF plots via `graph`.
 
-## Install
+## Installation
 
 Use the Stata command below to install the most recent published version of **xtlp**. 
 
@@ -35,6 +35,7 @@ or
 ```
 
 ### Requirements
+
 Stata version 14 or later is required for this package of commands.
 
 ## Update
