@@ -50,14 +50,14 @@ The command requires exactly one dependent variable and at least one independent
 {cmd:xtlp} estimates the dynamic impulse response functions (IRFs) in panel data 
 using the Local Projection (LP) method. It offers two estimators via {opt method()}:
 the standard fixed-effect estimator ({cmd:m(fe)}) and the split-panel 
-jackknife estimator ({cmd:m(spj)}). The SPJ estimator addresses the intrinsic Nickell bias in dynamic settings ({help xtlp##MSS2025:Mei, Sheng, and Shi, 2025}).
+jackknife estimator ({cmd:m(spj)}). The SPJ estimator addresses the intrinsic Nickell bias in dynamic settings ({help xtlp##MSS2025:Mei, Sheng, and Shi, 2026}).
 {p_end}
 
 {pstd}
 When LPs are estimated with fixed effects in short panels, the dynamic structure
 of the predictive equation induces the Nickell bias in the FE estimator, even if no lagged dependent variable appears explicitly in {it:indepvars}.
 This bias invalidates standard inference based on the FE t-statistics. The SPJ estimator implemented here in this command provides a simple and effective bias-correction. It restores valid statistical inference in panel LPs, following
-{help xtlp##MSS2025:Mei, Sheng, and Shi (2025)}.{p_end}
+{help xtlp##MSS2025:Mei, Sheng, and Shi (2026)}.{p_end}
 
 {pstd}
 The command performs a single-equation estimation under the specified fixed-effect 
@@ -89,7 +89,7 @@ and, if requested, produces IRF plots via {opt graph}.{p_end}
 {p2col:{cmd:spj}}requests the split-panel jackknife (SPJ) estimator. This method
 splits each individual time series into two subpanels and combines the full-sample
 and subsample FE estimates to deliver a bias-corrected estimator for dynamic
-panel LPs with fixed effects; see {help xtlp##MSS2025:Mei, Sheng, and Shi (2025)}.{p_end}
+panel LPs with fixed effects; see {help xtlp##MSS2025:Mei, Sheng, and Shi (2026)}.{p_end}
 {p2colreset}{...}
 
 {phang}
@@ -154,7 +154,7 @@ individual level.
 {marker examples}{...}
 {title:Examples}
 
-{pstd}Download four {it:.dta} files from the {cmd:applications/data_preparation} folder in the {browse "https://github.com/metricshilab/panel-lp-replication":replication package} of {help xtlp##MSS2025:Mei, Sheng, and Shi (2025)}{p_end}
+{pstd}Download four {it:.dta} files from the {cmd:applications/data_preparation} folder in the {browse "https://github.com/metricshilab/panel-lp-replication":replication package} of {help xtlp##MSS2025:Mei, Sheng, and Shi (2026)}{p_end}
 
 {phang2}{it:./applications/data_preparation/RR_f4data.dta }{p_end}
 {phang2}{it:./applications/data_preparation/BVX_t1data.dta}{p_end}
@@ -303,12 +303,11 @@ is organized as blocks of four columns for each shock with names{p_end}
 
 {marker MSS2025}{...}
 {phang}
-Ziwei Mei, Liugang Sheng, Zhentao Shi, 2025,
-{browse "https://arxiv.org/abs/2302.13455":"{it:Nickell bias in panel local projection: Financial crises are worse than you think}"}, Journal of International Economics.{p_end}
+Ziwei Mei, Liugang Sheng, Zhentao Shi (2026). {browse "https://doi.org/10.1016/j.jinteco.2025.104210":Nickell bias in panel local projection: Financial crises are worse than you think}. {it:Journal of International Economics}, 104210.{p_end}
 
 {phang}
-{browse "https://github.com/metricshilab/panel-lp-replication":Replication package} for Ziwei Mei, Liugang Sheng, Zhentao Shi, 2025, 
-"{it:Nickell bias in panel local projection: Financial crises are worse than you think}", Journal of International Economics.{p_end}
+{browse "https://github.com/metricshilab/panel-lp-replication":Replication package} for
+Ziwei Mei, Liugang Sheng, Zhentao Shi (2026). Nickell bias in panel local projection: Financial crises are worse than you think. {it:Journal of International Economics}, 104210.{p_end}
 
 {marker author}{...}
 {title:Author}
