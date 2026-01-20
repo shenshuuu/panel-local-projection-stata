@@ -162,6 +162,10 @@ program define xtlp, eclass sortpreserve
 			}
 			loc y cy_h
 		}
+		else {
+		    di as error "Error: option ytransf() must be level, diff, cmltdiff, or cmltsum."
+			exit 198
+		}
 	}
 	
 	* shock variables
@@ -290,8 +294,8 @@ program define xtlp, eclass sortpreserve
 			ereturn matrix b`h' b`h'
 			ereturn matrix V`h' V`h'
 			
-			local coef = el(b, 1, 1)
-			local var  = el(V, 1, 1)
+			local coef = b[1, 1]
+			local var  = V[1, 1]
 			local se   = sqrt(`var')
 			local ub = `coef' + 1.96 * `se'
 			local lb = `coef' - 1.96 * `se'
@@ -392,8 +396,8 @@ program define xtlp, eclass sortpreserve
 			foreach idx of local shocklist {
 				local ++sidx
 				tempname coef var se ub lb
-				scalar `coef' = el(b, 1, `idx')
-				scalar `var'  = el(V, `idx', `idx')
+				scalar `coef' = b[1, `idx']
+				scalar `var'  = V[`idx', `idx']
 				scalar `se'   = sqrt(`var')
 				scalar `ub'   = `coef' + 1.96 * `se'
 				scalar `lb'   = `coef' - 1.96 * `se'
