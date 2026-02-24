@@ -8,6 +8,8 @@ External repositories:
 
 - [panel-local-projection](https://github.com/zhentaoshi/panel-local-projection) is the repository that offers the package `pLP` in `R` to implement the panel local projection that includes FE and SPJ two methods.
 
+- [panel-local-projection-py](https://github.com/zhentaoshi/panel-local-projection-py.git) is a replica of the `R` package.
+
 ## Description
 
 ```stata
