@@ -1,11 +1,14 @@
-*! version 1.1  Split-Panel Jackknife (SPJ) - Variable Name Fixed
+*! version 1.0.1  xtlp
+*** format polishing
 program define xtlp, eclass sortpreserve
     version 14.0
     
-    syntax varlist(min=2 numeric fv ts) [if] [in], [ FE TFE ] Method(string) [ Hor(numlist integer) YTRansf(string) SHock(numlist integer) Graph]
+    syntax varlist(min=2 numeric fv ts) [if] [in], [ FE TFE ] ///
+		Method(string) [ Hor(numlist integer) YTRansf(string) SHock(numlist integer) ///
+		Graph]
 
-    * 1. Setup and Checks
-    * -------------------    
+	**# 1. Setup and Checks
+    * ----------------------
     qui xtset
     local idvar `r(panelvar)'
     local timevar `r(timevar)'
@@ -20,8 +23,8 @@ program define xtlp, eclass sortpreserve
         exit 198
     }
 
-    * 2. Pass data to Mata for processing
-    * -----------------------------------
+	**# 2. Pass data to Mata for processing
+    * --------------------------------------
     gettoken depvar indepvars : varlist
 	
 	marksample touse, novarlist
@@ -33,8 +36,8 @@ program define xtlp, eclass sortpreserve
 	
 	markout `touse' `indepvars_list' `idvar' `timevar'
 	
-	* fe_type
-	* --------
+	**# fe_type
+	* ----------
 	local fe_type = .
     if "`tfe'" != "" {
         local fe_type = 2
@@ -50,8 +53,8 @@ program define xtlp, eclass sortpreserve
         local fe_type = 1
     }
 	
-	* method
-	* -------
+	**# method
+	* ---------
 	local method = lower("`method'")
     local method_code = 0
     if "`method'" == "fe" {
@@ -65,8 +68,9 @@ program define xtlp, eclass sortpreserve
         exit 198
     }
 	
-	* horizon
-	* --------
+
+	**# horizon
+	* ----------
 	loc hors : subinstr local hor "," " ", all
 	loc nh = wordcount("`hors'")
 	
@@ -110,11 +114,11 @@ program define xtlp, eclass sortpreserve
 		loc hran `hs'/`hor'
 	}
 	
-	* dep variables
-	* --------------
+	**# dep variables
+	* ----------------
 	if `hor' > 0 {
 		* levels
-		if "`ytransf'"==""|"`ytransf'"=="level" {
+		if "`ytransf'"=="" | "`ytransf'"=="level" {
 			local ytransf "level"
 			forvalues h = `hran' {
 				loc hstr = `h' - `hs'
@@ -169,8 +173,8 @@ program define xtlp, eclass sortpreserve
 		}
 	}
 	
-	* shock variables
-	* --------------
+	**# shock variables
+	* ------------------
 	local nshock = 1
     if "`shock'" != "" {
 	    local nshock_nwords : word count `shock'
@@ -206,8 +210,8 @@ program define xtlp, eclass sortpreserve
 		local Nshock : word count `shocklist'
 	}
 	
-	* 3. Display
-	* -----------
+	**# 3. Display
+	* -------------
 	if `method_code' == 1 {
 		if `fe_type' == 1 {
 			local title_txt "xtlp - FE - Individual Fixed Effects"
@@ -226,48 +230,51 @@ program define xtlp, eclass sortpreserve
 	}
 	di _n as txt "`title_txt'"
 	
-	* 4. Estimate a single horizon or the full horizon range
+	**# 4. Estimate a single horizon or full horizon range
 	* -------------------------------------------------------
 	if `hor' == 0 {
+		**## h=0
 		
 		markout `touse' `depvar' `indepvars_list' `idvar' `timevar'
 		
 		mata: lp_work("`depvar'", "`indepvars_list'", "`touse'", "`idvar'", "`timevar'", `fe_type', `method_code')
 		
+		**### header
 		local N_val = scalar(N)
 		di _n as txt _col(53) as txt "Number of obs =" ///
 					 _col(67) as res %10.0fc `N_val'
-		
-// 		local depvar_trans_h "`trn`hstr''"
-// 		local indepvars_list : subinstr local indepvars_list "`depvar'" "`depvar_trans_h'", word all
-		
+				
 		matrix colnames b = `indepvars_list'
 		matrix colnames V = `indepvars_list'
 		matrix rownames V = `indepvars_list'
 	
 		ereturn post b V, esample(`touse')
 	
-		ereturn scalar N    = scalar(N)
-		ereturn scalar N_g  = scalar(N_g)
-		ereturn scalar df_r = scalar(df_r)
+		ereturn scalar N      = scalar(N)
+		ereturn scalar N_g    = scalar(N_g)
+		ereturn scalar df_r   = scalar(df_r)
 	
-		ereturn local depvar   "depvar"
-		ereturn local indepvars "`indepvars'"
-		ereturn local cmd      "xtlp"
+		ereturn local depvar     "`depvar'"
+		ereturn local indepvars  "`indepvars'"
+		ereturn local cmd        "xtlp"
 		ereturn local properties "b V"
 		
 		ereturn display
 		
 	}
 	else if (`hor' != 0 & `nshock' == 1) {
+		**## h>0 shock=1
+		
 		* plot data
 		cap drop _birf _seirf _birf_lo _birf_up
 		tempvar _t _zero birf seirf birf_up birf_lo 
 		
-		if `hs'<=0 loc h1 = `hor'+ 1 -`hs'
-		else 	   loc h1 = `hor'
-		if `hs'<=0 qui gen `_t' =_n-1+`hs'
-		else  	   qui gen `_t' =_n
+        if `hs'<=0 loc h1 = `hor' + 1 - `hs'
+        else       loc h1 = `hor'
+
+        if `hs'<=0 qui gen `_t' = _n - 1 + `hs'
+        else       qui gen `_t' = _n
+
 		qui gen `_zero' = 0
 		
 		qui gen `birf'    = 0 if _n<=`h1'
@@ -277,8 +284,9 @@ program define xtlp, eclass sortpreserve
 		
 		* estimation		
 		forval h=`hran' {
-			if `hs'<=0 loc k=`h'+ 1 - `hs'
-			else loc k=`h'
+            if `hs'<=0 loc k = `h' + 1 - `hs'
+            else       loc k = `h'
+
 			loc hstr = `h' - `hs'
 			
 			local depvar_transf ``y'`hstr''
@@ -294,19 +302,19 @@ program define xtlp, eclass sortpreserve
 			
 			matrix b`h' = b
 			matrix V`h' = V
-			ereturn matrix b`h' b`h'
-			ereturn matrix V`h' V`h'
+			ereturn matrix b`h' = b`h'
+			ereturn matrix V`h' = V`h'
 			
 			local coef = b[1, 1]
 			local var  = V[1, 1]
 			local se   = sqrt(`var')
-			local ub = `coef' + 1.96 * `se'
-			local lb = `coef' - 1.96 * `se'
+            local ub   = `coef' + 1.96 * `se'
+            local lb   = `coef' - 1.96 * `se'
 			quietly {
 				replace `birf'    = `coef' if _n == `k'
-				replace `seirf'   = `se'  if _n == `k'
-				replace `birf_up' = `ub'  if _n == `k'
-				replace `birf_lo' = `lb'  if _n == `k'
+                replace `seirf'   = `se'   if _n == `k'
+                replace `birf_up' = `ub'   if _n == `k'
+                replace `birf_lo' = `lb'   if _n == `k'
 			}
 		}
 		
@@ -324,10 +332,10 @@ program define xtlp, eclass sortpreserve
 		}
 		matrix rownames IRF = `rows'		
 		matlist IRF, noheader format(%9.5f) title("Impulse Response Function") lines(oneline)
-		ereturn matrix irf IRF
+		ereturn matrix irf = IRF
 		
-		* graph
-		loc mod = mod(`hor'-`hs',2)
+		**### graph
+        loc mod = mod(`hor' - `hs', 2)
 		if `hor'-`hs'>12 & `mod'==0 loc p 2
 		else if `hor'-`hs'>12 & `mod'==1 loc p 3
 		else loc p 1
@@ -339,22 +347,28 @@ program define xtlp, eclass sortpreserve
 			else if "`method'" == "spj" {
 			    loc lcolor red
 			}
-			qui twoway (rarea `birf_up' `birf_lo' `_t', fcolor(`lcolor'%15) lc(`lcolor'%7)) ///
-			(line `_zero' `_t', lcolor(gs5) lpattern(dash)) ///
-			(line `birf' `_t', lcolor(`lcolor') lpattern(solid)) if _n<=`h1', ///
-			legend(`off' order(3 "IRF of `y' (`depvar') to shock (`shockvar'), method(`method')") position(6)) tlabel(`hs'(`p')`hor') xtitle("Horizon") ///
+			qui twoway ///
+                (rarea `birf_up' `birf_lo' `_t', fcolor(`lcolor'%15) lc(`lcolor'%7)) ///
+				(line `_zero' `_t', lcolor(gs5) lpattern(dash)) ///
+				(line `birf' `_t', lcolor(`lcolor') lpattern(solid)) ///
+                if _n<=`h1', ///
+				legend(`off' order(3 "IRF of `y' (`depvar') to shock (`shockvar'), method(`method')") position(6)) ///
+                tlabel(`hs'(`p')`hor') ///
+                xtitle("Horizon") ///
 			name("IRF_`method'", replace)
 		}
 	}
 	else {
+		**## h>0 shock=2
+		
 		* plot data
 		cap drop _birf _seirf _birf_lo _birf_up
 		tempvar _t _zero
 		
-		if `hs'<=0 loc h1 = `hor'+ 1 -`hs'
-		else 	   loc h1 = `hor'
-		if `hs'<=0 qui gen `_t' =_n-1+`hs'
-		else  	   qui gen `_t' =_n
+        if `hs'<=0 loc h1 = `hor' + 1 - `hs'
+        else       loc h1 = `hor'
+        if `hs'<=0 qui gen `_t' = _n - 1 + `hs'
+        else       qui gen `_t' = _n
 		qui gen `_zero' = 0
 		
 		tempname IRF_all
@@ -375,8 +389,9 @@ program define xtlp, eclass sortpreserve
 		forval h=`hran' {
 		    local row_names "`row_names' `h'"
 			
-			if `hs'<=0 loc k=`h'+ 1 - `hs'
-			else loc k=`h'
+            if `hs'<=0 loc k = `h' + 1 - `hs'
+            else       loc k = `h'
+
 			loc hstr = `h' - `hs'
 			
 			local depvar_transf ``y'`hstr''
@@ -392,8 +407,8 @@ program define xtlp, eclass sortpreserve
 			
 			matrix b`h' = b
 			matrix V`h' = V
-			ereturn matrix b`h' b`h'
-			ereturn matrix V`h' V`h'
+			ereturn matrix b`h' = b`h'
+			ereturn matrix V`h' = V`h'
 			
 			local sidx = 0
 			foreach idx of local shocklist {
@@ -446,7 +461,7 @@ program define xtlp, eclass sortpreserve
 				title("Impulse Response Function for shock #`sidx' (`shockvar')") ///
 				lines(oneline)
 			
-			* graph
+			**### graph
 			if "`graph'" != "" {
 				local mod = mod(`hor' - `hs', 2)
 				if `hor' - `hs' > 12 & `mod' == 0 local p = 2
@@ -471,7 +486,7 @@ program define xtlp, eclass sortpreserve
 			}
 		}
 		matrix rownames `IRF_all' = `row_names'
-		ereturn matrix irf `IRF_all'
+		ereturn matrix irf = `IRF_all'
 	}
 end
 
@@ -495,35 +510,35 @@ void lp_work(string scalar depvar, ///
     real scalar N, K, N_g
     string rowvector xnames
     
-    // Load Data
-    Y = st_data(., depvar, touse)
-    X = st_data(., indepvars, touse)
-    ID = st_data(., idvar, touse)
+    // Load data
+    Y    = st_data(., depvar, touse)
+    X    = st_data(., indepvars, touse)
+    ID   = st_data(., idvar, touse)
     Time = st_data(., timevar, touse)
     
     // Get variable names for labeling
     xnames = tokens(indepvars)
     
-    // Panel Info setup (sort by ID, Time)
+    // Panel info setup (sort by ID, Time)
     // We need to sort X, Y, ID, Time together to ensure structure
     real matrix ALL
     ALL = Y, ID, Time, X
     _sort(ALL, (2,3)) // Sort by ID then Time
     
-    Y = ALL[., 1]
-    ID = ALL[., 2]
+    Y    = ALL[., 1]
+    ID   = ALL[., 2]
     Time = ALL[., 3]
-    X = ALL[., 4::cols(ALL)]
+    X    = ALL[., 4::cols(ALL)]
     
     N = rows(Y)
     K = cols(X)
     
-    // Panel Setup info: [start_index, end_index] for each individual
+    // Panel setup info: [start_index, end_index] for each individual
     info = panelsetup(ID, 1)
-    N_g = rows(info) // Number of groups (individuals)
+    N_g  = rows(info) // Number of groups (individuals)
 
     // -------------------------------------------------------
-    // Step 1: Define Split Points (The Logic provided)
+	//# Step 1: Define Split Points
     // -------------------------------------------------------
     real colvector T_a_idx, T_b_idx, cut_i
     T_a_idx = J(N, 1, 0)
@@ -535,7 +550,7 @@ void lp_work(string scalar depvar, ///
     for (i=1; i<=N_g; i++) {
         start = info[i, 1]
         end_t = info[i, 2]
-        Ti = end_t - start + 1
+        Ti    = end_t - start + 1
       
         cut_idx = floor((Ti + 1) / 2)
 		cut_i[i] = cut_idx
@@ -551,10 +566,10 @@ void lp_work(string scalar depvar, ///
     }
 
     // -------------------------------------------------------
-    // Step 2: Within Transformation (Demeaning)
+    //# Step 2: Within Transformation (Demeaning)
     // -------------------------------------------------------
 	// Full sample
-	real matrix YX, YX_dm
+    real matrix    YX, YX_dm
     real colvector Y_dot
     real matrix    X_dot
     YX    = Y, X
@@ -562,50 +577,57 @@ void lp_work(string scalar depvar, ///
     Y_dot = YX_dm[., 1]
     X_dot = YX_dm[., 2..(K+1)]
 	
-	// split
+    // Split
 	real colvector selA, selB
     selA = selectindex(T_a_idx :!= 0)
     selB = selectindex(T_b_idx :!= 0)
 
     // A sample
     real colvector Y_A, ID_A, Time_A
-    real matrix   X_A
-    real matrix   infoA
+    real matrix    X_A
+    real matrix    infoA
+
     Y_A    = Y[selA, .]
     X_A    = X[selA, .]
     ID_A   = ID[selA, .]
     Time_A = Time[selA, .]
     infoA  = panelsetup(ID_A, 1)
 	
-	real matrix YX_a, YX_a_dm
+    real matrix    YX_a, YX_a_dm
 	real colvector Y_a_dot
-    real matrix   X_a_dot
+    real matrix    X_a_dot
+
     YX_a    = Y_A, X_A
     YX_a_dm = twoway_demean(YX_a, ID_A, Time_A, infoA, fe_type)
+
     Y_a_dot = YX_a_dm[., 1]
-    X_a_dot = YX_a_dm[., 2..(cols(YX_a_dm))]
+    X_a_dot = YX_a_dm[., 2..cols(YX_a_dm)]
 
     // B sample
     real colvector Y_B, ID_B, Time_B
-    real matrix   X_B
-    real matrix   infoB
+    real matrix    X_B
+    real matrix    infoB
+
     Y_B    = Y[selB, .]
     X_B    = X[selB, .]
     ID_B   = ID[selB, .]
     Time_B = Time[selB, .]
     infoB  = panelsetup(ID_B, 1)
 	
-	real matrix YX_b, YX_b_dm
+    real matrix    YX_b, YX_b_dm
     real colvector Y_b_dot
     real matrix    X_b_dot
+
     YX_b    = Y_B, X_B
     YX_b_dm = twoway_demean(YX_b, ID_B, Time_B, infoB, fe_type)
+
     Y_b_dot = YX_b_dm[., 1]
-    X_b_dot = YX_b_dm[., 2..(cols(YX_b_dm))]
+    X_b_dot = YX_b_dm[., 2..cols(YX_b_dm)]
 	
-	// prepare for d_dot
+    // Prepare full-length split demeaned X
 	real matrix X_dot_a_full, X_dot_b_full
 	real scalar NT
+
 	NT = rows(X_dot)
 	
 	X_dot_a_full = J(NT, K, .)
@@ -615,25 +637,25 @@ void lp_work(string scalar depvar, ///
 	X_dot_b_full[selB, .] = X_b_dot
 
 	// -------------------------------------------------------
-    // Step 3: Estimate Coefficients (OLS on demeaned data)
+    //# Step 3: Estimate Coefficients (OLS on demeaned data)
     // -------------------------------------------------------
     real colvector b_full, b_a, b_b
     real matrix XX_inv_full, XX_inv_a, XX_inv_b
   
-    // Full
+    // Full sample
     XX_inv_full = cholinv(cross(X_dot, X_dot))
-    b_full = XX_inv_full * cross(X_dot, Y_dot)
+    b_full      = XX_inv_full * cross(X_dot, Y_dot)
   
     // Part A
     XX_inv_a = cholinv(cross(X_a_dot, X_a_dot))
-    b_a = XX_inv_a * cross(X_a_dot, Y_a_dot)
+    b_a      = XX_inv_a * cross(X_a_dot, Y_a_dot)
   
     // Part B
     XX_inv_b = cholinv(cross(X_b_dot, X_b_dot))
-    b_b = XX_inv_b * cross(X_b_dot, Y_b_dot)
+    b_b      = XX_inv_b * cross(X_b_dot, Y_b_dot)
   
     // -------------------------------------------------------
-    // Step 4: Estimator
+    //# Step 4: Estimator
     // -------------------------------------------------------
 	if (method_code == 1) {
 	    b_est = b_full
@@ -643,32 +665,38 @@ void lp_work(string scalar depvar, ///
 	}
   
     // -------------------------------------------------------
-    // Step 5: Variance Calculation
+    //# Step 5: Variance Calculation
     // -------------------------------------------------------
 	real matrix X_mat, X_a_mat, X_b_mat, X_sub, d_dot
-	X_mat  = X_dot
-	X_a_mat= X_dot_a_full
-	X_b_mat= X_dot_b_full
+
+    X_mat   = X_dot
+    X_a_mat = X_dot_a_full
+    X_b_mat = X_dot_b_full
 	
-	X_sub  = J(NT, K, .)
-	d_dot  = J(NT, K, .)
+    X_sub = J(NT, K, .)
+    d_dot = J(NT, K, .)
+
 	for (i=1; i<=N_g; i++) {
 		real scalar start1, end_t1, Ti1, ci
+
 		start1 = info[i,1]
 		end_t1 = info[i,2]
 		Ti1    = end_t1 - start1 + 1
-		ci    = cut_i[i]
+        ci     = cut_i[i]
+
 		if (ci != .) {
 			if (ci > 0) {
 				X_sub[| start1,1 \ start1+ci-1,K |] = ///
 					X_a_mat[| start1,1 \ start1+ci-1,K |]
 			}
+
 			if (ci < Ti1) {
 				X_sub[| start1+ci,1 \ end_t1,K |] = ///
 					X_b_mat[| start1+ci,1 \ end_t1,K |]
 			}
 		}
 	}
+
 	if (method_code == 1) {
 	    d_dot = X_mat
 	}
@@ -677,12 +705,14 @@ void lp_work(string scalar depvar, ///
 	}
 	
 	real colvector e
-	e = Y_dot - X_dot*b_est      // NT x 1
+    e = Y_dot - X_dot * b_est      // NT x 1
 
 	real matrix W_N
 	W_N = J(K, K, 0)
+
 	for (i = 1; i <= N_g; i++) {
 		real scalar start2, end_t2, Ti2
+
 		start2 = info[i,1]
 		end_t2 = info[i,2]
 		Ti2    = end_t2 - start2 + 1
@@ -717,12 +747,12 @@ void lp_work(string scalar depvar, ///
 	st_matrix("b", b_est')    // 1 x K
 	st_matrix("V", V_est)     // K x K
 	
-	st_numscalar("N",   N)
-	st_numscalar("N_g", N_g)
+	st_numscalar("N",    N)
+	st_numscalar("N_g",  N_g)
 	st_numscalar("df_r", N_g - 1)
 }
 
-// function: twoway demean
+//# function: twoway demean
 real matrix twoway_demean(real matrix Z, ///
 						  real colvector ID, ///
                           real colvector Time, ///
@@ -743,7 +773,7 @@ real matrix twoway_demean(real matrix Z, ///
     max_iter = (fe_type == 1 ? 1 : 1000) 
 
     if (fe_type != 1) {
-        tuniq = uniqrows(sort(Time,1))
+        tuniq = uniqrows(sort(Time, 1))
         Nt = rows(tuniq)
     }
 
@@ -761,6 +791,7 @@ real matrix twoway_demean(real matrix Z, ///
 
     	    Zi     = Z_dm[|start,1 \ end_t,.|]
     	    mean_i = mean(Zi)
+
     	    Z_dm[|start,1 \ end_t,.|] = Zi :- mean_i
     	}
 
@@ -771,11 +802,13 @@ real matrix twoway_demean(real matrix Z, ///
 
 				real colvector idx_t
 				idx_t = selectindex(Time :== tval)
+
 				if (rows(idx_t) == 0) continue
 
 				real matrix Zt
-				Zt = Z_dm[idx_t, .]
 				real rowvector mean_t
+
+                Zt     = Z_dm[idx_t, .]
 				mean_t = mean(Zt)
 
 				Z_dm[idx_t, .] = Zt :- mean_t
@@ -785,7 +818,9 @@ real matrix twoway_demean(real matrix Z, ///
 		iter++
         
         if (fe_type == 1) break 
+
         diff = max(abs(Z_dm - Z_prev))
+
         if (diff < tol) break
 	}
 
