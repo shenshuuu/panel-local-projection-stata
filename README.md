@@ -20,7 +20,7 @@ xtlp depvar indepvars [if] [in], method(method_name) [fe tfe hor(numlist) ytrans
 
 When LPs are estimated with fixed effects in short panels, the dynamic structure of the predictive equation induces the Nickell bias in the FE estimator, even if no lagged dependent variable appears explicitly in *indepvars*. This bias invalidates standard inference based on the FE t-statistics. The SPJ estimator implemented here in this command provides a simple and effective bias-correction. It restores valid statistical inference in panel LPs.
 
-The command performs a single-equation estimation under the specified fixed-effect structure (`fe` or `tfe`). Given *depvar* and *indepvars*, `xtlp` applies the chosen estimator (`method(fe)` or `method(spj)`) to produce coefficient estimates.
+The command performs a single-equation estimation under the specified fixed-effect structure (`fe` or `tfe`). Given *depvar* and *indepvars*, `xtlp` applies the chosen estimator (`method(fe)` or `method(spj)`) to produce coefficient estimates. The variance–covariance matrix (VCE) of the coefficients is controlled by `vce()`. Five variance estimators are supported: homoskedastic (`unadjusted`, the default), heteroskedasticity-robust (`robust`), one- and two-way cluster-robust (`cluster`), and Driscoll–Kraay (`dkraay`).
 
 For multiple horizons, `xtlp` automates the IRF construction over the range specified in `hor()`. It generates horizon-specific transformed dependent variables via `ytransf()`, runs a regression for each horizon, and compiles the results. The option `shock()` allows users to treat several leading regressors as shocks; `xtlp` then reports the IRFs and, if requested, produces IRF plots via `graph`.
 
@@ -41,7 +41,9 @@ or
 Stata version 14 or later is required for this package of commands.
 
 ## Update
-* 2025-12-10: [version 1.0.0](https://github.com/shenshuuu/panel-local-projection-stata/tree/main)
+* 2025-12-10: [version 1.0.0](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.0.0) — Initial stable version.
+* 2026-01-22: [version 1.0.1](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.0.1) — Bug fix in missing value deletion; `ytransf()` behavior restricted.
+* 2026-07-27: [version 1.1.0](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.1.0) — Full VCE support `vce()` (`unadjusted`/`robust`/`cluster`/`dkraay` + `ase`/`nodfadj`) and `keepsingletons` option.
 
 ## Author
 
