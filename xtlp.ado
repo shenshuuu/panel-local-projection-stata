@@ -13,6 +13,7 @@ program define xtlp, eclass sortpreserve
     *   - greedy  vce\((.*)\)    over-matches: vce(dkraay) hor(0) -> "dkraay) hor(0"
     *   - lazy    vce\(.*?\)     under-matches: vce(dkraay lag(2), ase) -> "dkraay lag(2"
     * so we do a manual bracket-pairing scan instead.
+    local cmdline : copy local 0
     local vce ""
     local vce_seen 0
     local vce0 `"`0'"'
@@ -200,7 +201,7 @@ program define xtlp, eclass sortpreserve
 			else if `"`sub'"' == "nodfadj" {
 				if `nodfadj_code' == 1 {
 					di as error "Error: vce() suboption nodfadj specified more than once."
-				exit 198
+					exit 198
 				}
 				local nodfadj_code = 1
 			}
@@ -636,6 +637,7 @@ program define xtlp, eclass sortpreserve
 		ereturn local vce        "`vce_string'"
 		ereturn local vcetype    "`vcetype_string'"
 		ereturn local cmd        "xtlp"
+		ereturn local cmdline    `"xtlp `cmdline'"'
 		ereturn local properties "b V"
 		
 		ereturn display
@@ -785,6 +787,8 @@ program define xtlp, eclass sortpreserve
 		matlist IRF, noheader format(%12.5f) title("Impulse Response Function") lines(oneline) rowtitle("Horizon")
 		ereturn local vce     "`vce_string'"
 		ereturn local vcetype "`vcetype_string'"
+		ereturn local cmd      "xtlp"
+		ereturn local cmdline  `"xtlp `cmdline'"'
 		ereturn matrix irf = IRF
 		
 		**### graph
@@ -1013,6 +1017,8 @@ program define xtlp, eclass sortpreserve
 		matrix rownames `IRF_all' = `row_names'
 		ereturn local vce     "`vce_string'"
 		ereturn local vcetype "`vcetype_string'"
+		ereturn local cmd      "xtlp"
+		ereturn local cmdline  `"xtlp `cmdline'"'
 		ereturn matrix irf = `IRF_all'
 	}
 end

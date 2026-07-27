@@ -141,7 +141,7 @@ cluster-robust standard errors; {it:clustervar1} is required and
 {it:clustervar2} is required for two-way clustering (at most two clustervars). Two-way clustering follows {help xtlp##CGM2011:Cameron, Gelbach, and Miller (2011)}.{p_end}
 {p 20 22 2}Aligned with {cmd:reghdfe ..., vce(cluster ...)}. {p_end}
 
-{p2col:{opt dk:raay} [{cmd:lag(}{it:#}{cmd:)}, {opt nodfadj}]}{p_end}
+{p2col:{opt dk:raay} [{cmd:lag(}{it:#}{cmd:)}] [, {opt nodfadj}]}{p_end}
 {p 20 22 2}Driscoll–Kraay ({help xtlp##DK1998:1998})
 standard errors, robust to cross-sectional and serial correlation, clustered on
 the time variable. If gaps are detected in the time variable, {cmd:xtlp} issues a warning but does {it:not} abort execution. {cmd:lag(#)} sets the maximum lag order; the default is
@@ -152,7 +152,7 @@ degrees of freedom) to the {helpb xtscc} style. {cmd:nodfadj} and {cmd:ase} are 
 
 {p2col:{cmd:[,} {opt ase}{cmd:]}}returns asymptotic standard
 errors with {it:no} small-sample adjustment. Allowed with all {it:vcetype}s. {cmd:ase} and {cmd:nodfadj} are mutually exclusive.{p_end}
-{p 20 22 2}{cmd:xtlp ..., vce(dkraay lag(2), ase)} is aligned with {cmd:xtscc ..., lag(2) ase}.
+{p 20 22 2}{cmd:xtlp ..., vce(dkraay lag(2), ase)} is aligned with {cmd:xtscc ..., lag(2) ase}.{p_end}
 {p2colreset}{...}
 
 {phang}
@@ -207,6 +207,7 @@ the graph plots the point estimates together with 95% confidence intervals over 
 
 {marker notes}{...}
 {title:Notes}
+
 {pstd} If the regressors are collinear or the sample is degenerate, a single estimation exits with error 198. In a multi-horizon run, a degenerate horizon does {it:not} abort execution: {cmd:xtlp} posts missing coefficients and standard errors for that horizon and continues with the remaining horizons. {p_end}
 
 
@@ -327,6 +328,7 @@ When {cmd:hor(0)} is specified (or implied by default), {cmd:xtlp} runs one FE o
 
 {p2col 5 20 24 2:Macros}{p_end}
 {synopt:{cmd:e(cmd)}}{cmd:xtlp}{p_end}
+{synopt:{cmd:e(cmdline)}}command as typed{p_end}
 {synopt:{cmd:e(depvar)}}name of dependent variable{p_end}
 {synopt:{cmd:e(indepvars)}}names of independent variables{p_end}
 {synopt:{cmd:e(vce)}}canonical {cmd:vce()} string, e.g. {cmd:unadjusted}, {cmd:robust}, {cmd:cluster clustervar1}, {cmd:cluster clustervar1 clustervar2}, {cmd:dkraay lag(2)}, or {cmd:dkraay lag(2) nodfadj}. The {cmd:ase} suboption is {it:not} recorded in {cmd:e(vce)}{p_end}
@@ -360,6 +362,8 @@ standard errors, and the lower and upper bounds of 95% confidence intervals.{p_e
 {synopt:{cmd:e(lag}{it:h}{cmd:)}}Driscoll–Kraay maximum lag order for horizon {it:h}; only with {cmd:vce(dkraay)}{p_end}
 
 {p2col 5 20 24 2:Macros}{p_end}
+{synopt:{cmd:e(cmd)}}{cmd:xtlp}{p_end}
+{synopt:{cmd:e(cmdline)}}command as typed{p_end}
 {synopt:{cmd:e(vce)}}canonical {cmd:vce()} string (see Case 1){p_end}
 {synopt:{cmd:e(vcetype)}}title displayed above the standard errors (see Case 1){p_end}
 
@@ -408,7 +412,7 @@ Driscoll, J. C., and Kraay, A. C. (1998). Consistent covariance matrix estimatio
 {phang}
 Ziwei Mei, Liugang Sheng, Zhentao Shi (2026). {browse "https://doi.org/10.1016/j.jinteco.2025.104210":Nickell bias in panel local projection: Financial crises are worse than you think}. {it:Journal of International Economics}, 104210.{p_end}
 {phang}
-{browse "https://github.com/metricshilab/panel-lp-replication":Replication package} for {help xtlp##MSS2026:Mei, Sheng, and Shi (2026)}
+{browse "https://github.com/metricshilab/panel-lp-replication":Replication package} for {help xtlp##MSS2026:Mei, Sheng, and Shi (2026)}. {p_end}
 
 
 {marker author}{...}
