@@ -1495,7 +1495,7 @@ void lp_work(string scalar depvar, ///
 		// ============================================================
 		real matrix M_homo
 		M_homo = (rss / NT) * cross(d_dot, d_dot)	
-		if (ase_code == 1)  adj = NT / (NT - 1)
+		if (ase_code == 1)  adj = 1 // NT / (NT - 1)
 		else                adj = NT / df_r_conv
 		V_est = XX_inv * (M_homo * adj) * XX_inv
 		df_r_val = df_r_conv
@@ -1510,7 +1510,7 @@ void lp_work(string scalar depvar, ///
 		// ============================================================
 		real matrix M_hc1
 		M_hc1 = quadcross(d_dot, (e :^ 2), d_dot)   // K x K, weighted by e_i^2
-		if (ase_code == 1)  adj = NT / (NT - 1)
+		if (ase_code == 1)  adj = 1 // NT / (NT - 1)
 		else                adj = NT / df_r_conv
 		V_est = XX_inv * (M_hc1 * adj) * XX_inv
 		df_r_val = df_r_conv
@@ -1569,7 +1569,7 @@ void lp_work(string scalar depvar, ///
 		}
 
 		if (ase_code == 1) {
-			adj = G_c1 / (G_c1 - 1.0)
+			adj = 1 // G_c1 / (G_c1 - 1.0)
 		}
 		else {
 			// small-sample denominator must stay positive
@@ -1688,7 +1688,7 @@ void lp_work(string scalar depvar, ///
 		}
         
 		if (ase_code == 1) {
-			adj = N_clust / (N_clust - 1)
+			adj = 1 // N_clust / (N_clust - 1)
 		}
 		else {
 			// small-sample denominator must stay positive
