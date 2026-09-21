@@ -226,6 +226,7 @@ the graph plots the point estimates together with 95% confidence intervals over 
 
 {phang2}{stata "use BVX_t1data, clear"}{p_end}
 {phang2}{stata "keep if smp==1"}{p_end}
+{phang2}{stata "xtset ccode year"}{p_end}
 
 {pstd}Estimate using FE estimator ({cmd:m(fe)}) with individual fixed effects ({opt fe}){p_end}
 {phang2}
@@ -240,6 +241,7 @@ the graph plots the point estimates together with 95% confidence intervals over 
     {title:Example 2: FE vs. SPJ with ({opt tfe}) (single estimation)}
 
 {phang2}{stata "use RR_f4data, replace"}{p_end}
+{phang2}{stata "xtset COUNTDUMS halfyear"}{p_end}
 
 {pstd}Estimate using FE estimator ({cmd:m(fe)}) with two-way fixed effects ({opt tfe}){p_end}
 {phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe)"}{p_end}
@@ -250,6 +252,7 @@ the graph plots the point estimates together with 95% confidence intervals over 
     {title:Example 3: Estimating IRFs (multiple horizons)}
 
 {phang2}{stata "use RR_f4data, replace"}{p_end}
+{phang2}{stata "xtset COUNTDUMS halfyear"}{p_end}
 
 {pstd}Estimate IRF from horizon 0 to 10 ({cmd:h(0 10)}) and plot graph ({cmd:g}){p_end}
 {phang2}{stata "xtlp f0LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe) h(0 10) g"}{p_end}
@@ -262,6 +265,7 @@ the graph plots the point estimates together with 95% confidence intervals over 
     {title:Example 4: Dependent variable transformation (multiple horizons)}
 
 {phang2}{stata "use CS_f3data, clear"}{p_end}
+{phang2}{stata "xtset cnty obs"}{p_end}
 
 {pstd}Using cumulative sum transformation ({cmd:cmltsum}) for growth rates{p_end}
 {phang2}{stata "xtlp GRRT_WB CRISIS l1CRISIS l2CRISIS l3CRISIS l4CRISIS l1GRRT_WB l2GRRT_WB l3GRRT_WB l4GRRT_WB, fe m(fe) h(0 10) ytr(cmltsum) g"}{p_end}
@@ -270,6 +274,7 @@ the graph plots the point estimates together with 95% confidence intervals over 
     {title:Example 5: Multiple shocks (multiple horizons)}
 
 {phang2}{stata "use MSV_f2data, clear"}{p_end}
+{phang2}{stata "xtset CountryCode year"}{p_end}
 {phang2}{stata "keep CountryCode year F1y F2y F3y F4y F5y F6y F7y F8y F9y F10y L0HHD_L1GDP L1HHD_L1GDP L2HHD_L1GDP L3HHD_L1GDP L4HHD_L1GDP L0NFD_L1GDP L1NFD_L1GDP L2NFD_L1GDP L3NFD_L1GDP L4NFD_L1GDP L0y L1y L2y L3y L4y"}{p_end}
 
 {pstd}Specify two shock variables using {cmd:sh(2)}{p_end}
@@ -279,8 +284,9 @@ the graph plots the point estimates together with 95% confidence intervals over 
     {title:Example 6: Variance estimators ({opt vce()})}
 
 {phang2}{stata "use RR_f4data, replace"}{p_end}
+{phang2}{stata "xtset COUNTDUMS halfyear"}{p_end}
 
-{phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, fe m(fe) vce(un)"}{p_end}
+{phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe) vce(un)"}{p_end}
 {phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe) vce(r)"}{p_end}
 {phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe) vce(cl COUNTDUMS)"}{p_end}
 {phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe) vce(cl COUNTDUMS halfyear)"}{p_end}
@@ -293,11 +299,12 @@ the graph plots the point estimates together with 95% confidence intervals over 
 
     {title:Example 7: Keeping singleton observations ({opt keepsingletons})}
 
-{phang2}{stata "use RR_f4data, replace"}{p_end}
+{phang2}{stata "use CS_f3data, replace"}{p_end}
+{phang2}{stata "xtset cnty obs"}{p_end}
 
 {pstd}By default singleton groups are dropped;
 {opt keepsingletons} retains them and warns{p_end}
-{phang2}{stata "xtlp f10LNGDP CRISIS l1LNGDP l2LNGDP l3LNGDP l4LNGDP l1CRISIS l2CRISIS l3CRISIS l4CRISIS, tfe m(fe) vce(robust) keepsin"}{p_end}
+{phang2}{stata "xtlp cf3GRRT_WB CRISIS l1CRISIS l2CRISIS l3CRISIS l4CRISIS l1GRRT_WB l2GRRT_WB l3GRRT_WB l4GRRT_WB, tfe m(fe) vce(robust) keepsin"}{p_end}
 
 
 {marker results}{...}

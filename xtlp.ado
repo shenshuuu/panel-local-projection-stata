@@ -814,7 +814,7 @@ program define xtlp, eclass sortpreserve
 				legend(`off' order(3 "IRF of `y' (`depvar') to shock (`shockvar'), method(`method')") position(6)) ///
                 tlabel(`hs'(`p')`hor') ///
                 xtitle("Horizon") ///
-			name("IRF_`method'", replace)
+				name("IRF_`method'", replace)
 		}
 	}
 	else {
@@ -1489,12 +1489,15 @@ void lp_work(string scalar depvar, ///
 	if (vce_code == 0) {
 		// ============================================================
 		//## Conventional (homoskedastic) SE, aligned to xtreg,fe / reghdfe unadjusted
-		//   V = (rss/NT) * (NT/df_r) * XX_inv
-		// ase=1 => NT/(NT-1) instead of NT/df_r (asymptotic, no small-sample adj)
+		//  M = sum_i d_i d_i' * e_i^2; V = XX_inv * M * XX_inv * (NT/df_r)
+		// Homoskedastic replacement: e_i^2 -> SSR / NT
+		// ase=1 => NT/(NT-1) instead of NT/df_r
 		// ============================================================
+		real matrix M_homo
+		M_homo = (rss / NT) * cross(d_dot, d_dot)	
 		if (ase_code == 1)  adj = NT / (NT - 1)
 		else                adj = NT / df_r_conv
-		V_est = (rss / NT) * adj * XX_inv
+		V_est = XX_inv * (M_homo * adj) * XX_inv
 		df_r_val = df_r_conv
 	}
 	else if (vce_code == 1) {
