@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.1.0  27jul2026}{...}
+{* *! version 1.1.1  22sep2026}{...}
 {viewerjumpto "Syntax" "xtlp##syntax"}{...}
 {viewerjumpto "Description" "xtlp##description"}{...}
 {viewerjumpto "Options" "xtlp##options"}{...}

@@ -44,6 +44,7 @@ Stata version 14 or later is required for this package of commands.
 * 2025-12-10: [version 1.0.0](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.0.0) — Initial stable version.
 * 2026-01-22: [version 1.0.1](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.0.1) — Bug fix in missing value deletion; `ytransf()` behavior restricted.
 * 2026-07-27: [version 1.1.0](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.1.0) — Full VCE support `vce()` (`unadjusted`/`robust`/`cluster`/`dkraay` + `ase`/`nodfadj`) and `keepsingletons` option.
+* 2026-09-22: [version 1.1.1](https://github.com/shenshuuu/panel-local-projection-stata/releases/tag/v1.1.1) — Revise `vce(unadjusted)` to use sandwich template; revise small-sample adjustment for `vce(unadjusted/robust/cluster, ase)`
 
 ## Author
 
